@@ -1,0 +1,114 @@
+
+{% load static %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h5 class="card-title m-0">Create Visualization</h5>
+                </div>
+                <div class="card-body">
+                    <form id="visualizationForm" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            {{ form.title }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="chart_type" class="form-label">Chart Type</label>
+                            {{ form.chart_type }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="x_axis" class="form-label">X Axis</label>
+                            {{ form.x_axis }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="y_axis" class="form-label">Y Axis</label>
+                            {{ form.y_axis }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Generate Chart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title m-0">Chart Preview</h5>
+                </div>
+                <div class="card-body">
+                    <div id="chartContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('visualizationForm');
+    const fileId = '{{ data_file.id }}';
+
+    // Populate columns for x and y axis dropdowns
+    fetch(`/data-explorer/get-columns/${fileId}/`)
+        .then(response => response.json())
+        .then(columns => {
+            const xAxis = document.getElementById('id_x_axis');
+            const yAxis = document.getElementById('id_y_axis');
+            columns.forEach(column => {
+                xAxis.add(new Option(column, column));
+                yAxis.add(new Option(column, column));
+            });
+        });
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        
+        fetch(`/data-explorer/create-visualization/${fileId}/`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Create chart using ApexCharts
+                const options = {
+                    series: [{
+                        name: formData.get('y_axis'),
+                        data: data.chartData.y
+                    }],
+                    chart: {
+                        type: formData.get('chart_type'),
+                        height: 350
+                    },
+                    xaxis: {
+                        categories: data.chartData.x,
+                        title: {
+                            text: formData.get('x_axis')
+                        }
+                    },
+                    yaxis: {
+                        title: {
+                            text: formData.get('y_axis')
+                        }
+                    },
+                    title: {
+                        text: formData.get('title'),
+                        align: 'center'
+                    }
+                };
+
+                const chart = new ApexCharts(document.querySelector("#chartContainer"), options);
+                chart.render();
+            }
+        });
+    });
+});
+</script>
+

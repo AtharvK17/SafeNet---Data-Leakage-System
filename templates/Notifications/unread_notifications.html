@@ -1,0 +1,48 @@
+{% load static %}
+
+
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">Unread Notifications</h4>
+        <div class="card">
+            <h5 class="card-header">Your Unread Notifications</h5>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-borderless border-bottom">
+                        <thead>
+                            <tr>
+                                <th class="text-nowrap">Type</th>
+                                <th class="text-nowrap">Severity</th>
+                                <th class="text-nowrap">Message</th>
+                                <th class="text-nowrap">Timestamp</th>
+                                <th class="text-nowrap">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for notification in notifications %}
+                            <tr>
+                                <td>{{ notification.get_notification_type_display }}</td>
+                                <td>
+                                    <div class="alert alert-{{ notification.severity }}" role="alert">
+                                        {{ notification.get_severity_display }}
+                                    </div>
+                                </td>
+                                <td>{{ notification.message }}</td>
+                                <td>{{ notification.timestamp|date:"Y-m-d H:i:s" }}</td>
+                                <td>
+                                    <a href="{% url 'notifications:mark_as_read' notification.id %}" class="btn btn-sm btn-primary">Mark as Read</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No unread notifications.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

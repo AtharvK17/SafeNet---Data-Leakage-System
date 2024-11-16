@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html
+  lang="en"
+  class="light-style customizer-hide"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="{% static 'assets' %}"
+  data-template="vertical-menu-template-free"
+>
+<head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>Verify OTP - SafeNet</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon/favicon.png' %}" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/boxicons.css' %}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/core.css' %}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/theme-default.css' %}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{% static 'assets/css/demo.css' %}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+
+    <!-- Page CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/pages/page-auth.css' %}" />
+    <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+
+    <script src="{% static 'assets/js/config.js' %}"></script>
+
+    <style>
+        .otp-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 24px;
+            margin: 0 5px;
+            transition: border-color 0.3s;
+        }
+
+        .otp-input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Content -->
+    <div class="container-xxl">
+      <div class="authentication-wrapper authentication-basic container-p-y">
+        <div class="authentication-inner">
+          <!-- Verify OTP -->
+          <div class="card">
+            <div class="card-body">
+              <!-- Logo -->
+              <div class="app-brand justify-content-center">
+                <a href="landing.html" class="app-brand-link gap-2">
+                  <span class="app-brand-logo demo">
+                    <img src="{% static 'assets/img/logo/s.png' %}" alt="Logo" style="width: 50px; height: auto;" />
+                  </span>
+                  <span class="app-brand-text demo text-body fw-bolder">SafeNet</span>
+                </a>
+              </div>
+              <!-- /Logo -->
+              <h4 class="mb-2">Verify OTP 🔒</h4>
+              <p class="mb-4">Enter the 6-digit OTP sent to your email.</p>
+              <form id="formAuthentication" class="mb-3" action="{% url 'reset_password' %}" method="POST">
+                {% csrf_token %}
+                <div class="otp-container">
+                  <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 'otp2')" onkeydown="handleKeyDown(event, this, '')" id="otp1" name="otp1" required />
+                  <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 'otp3')" onkeydown="handleKeyDown(event, this, 'otp1')" id="otp2" name="otp2" required />
+                  <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 'otp4')" onkeydown="handleKeyDown(event, this, 'otp2')" id="otp3" name="otp3" required />
+                  <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 'otp5')" onkeydown="handleKeyDown(event, this, 'otp3')" id="otp4" name="otp4" required />
+                  <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 'otp6')" onkeydown="handleKeyDown(event, this, 'otp4')" id="otp5" name="otp5" required />
+                  <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, '')" onkeydown="handleKeyDown(event, this, 'otp5')" id="otp6" name="otp6" required />
+                </div>
+                <button class="btn btn-primary d-grid w-100">Verify OTP</button>
+              </form>
+              
+              <div class="text-center">
+                <a href="{% url 'forgot_password' %}" class="d-flex align-items-center justify-content-center">
+                  <i class="bx bx-chevron-left scaleX-n1-rtl bx-sm"></i>
+                  Back to forgot password
+                </a>
+              </div>
+            </div>
+          </div>
+          <!-- /Verify OTP -->
+        </div>
+      </div>
+    </div>
+    <!-- / Content -->
+
+    <!-- Core JS -->
+    <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+    <script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+    <script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+
+    <!-- Main JS -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <script>
+        function moveToNext(currentInput, nextInputId) {
+            if (currentInput.value.length >= currentInput.maxLength) {
+                // Move to the next input box once a number is entered
+                const nextInput = document.getElementById(nextInputId);
+                if (nextInput) {
+                    nextInput.focus();
+                }
+            }
+        }
+
+        function handleKeyDown(event, currentInput, previousInputId) {
+            // Allow only number inputs and allow control keys like Backspace, Tab, etc.
+            if (event.key >= '0' && event.key <= '9') {
+                return;  // Allow number input
+            }
+
+            if (event.key === 'Backspace') {
+                if (currentInput.value === "") {
+                    // If the input is already empty, move focus to the previous input
+                    const previousInput = document.getElementById(previousInputId);
+                    if (previousInput) {
+                        previousInput.focus();
+                    }
+                } else {
+                    // Clear the current input on the first Backspace press
+                    currentInput.value = "";
+                    event.preventDefault();  // Prevent default behavior to avoid further backspacing
+                }
+            }
+        }
+    </script>
+
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+</body>
+</html>

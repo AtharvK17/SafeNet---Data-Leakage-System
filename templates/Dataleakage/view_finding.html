@@ -1,0 +1,41 @@
+<!-- view_finding.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Data Leak Findings</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container my-5">
+        <h2>Data Leak Findings</h2>
+        <table class="table table-bordered mt-4">
+            <thead>
+                <tr>
+                    <th>File</th>
+                    <th>Sensitivity Score</th>
+                    <th>User</th>
+                    <th>Description</th>
+                    <th>Date Found</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for finding in findings %}
+                    <tr>
+                        <td>{{ finding.file }}</td>
+                        <td>{{ finding.sensitivity_score }}</td>
+                        <td>{{ finding.user.email }}</td>
+                        <td>{{ finding.description }}</td>
+                        <td>{{ finding.date_found }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No data leak findings available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1117 @@
+{% load static %}
+<!DOCTYPE html>
+<html
+  lang="en"
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="{% static 'assets' %}"
+  data-template="vertical-menu-template-free"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>SafeNet : Accounts settings</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon/favicon.png' %}" />
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/boxicons.css' %}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/core.css' %}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/theme-default.css' %}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{% static 'assets/css/demo.css' %}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/apex-charts/apex-charts.css' %}" />
+
+    <!-- Page CSS -->
+<!-- Bootstrap Bundle with Popper.js (required for dropdowns) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Helpers -->
+    <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{% static 'assets/js/config.js' %}"></script>
+
+    <style>
+        .avatar img {
+            width: 40px; /* Set the desired size */
+            height: 40px; /* Set the desired size */
+            border-radius: 50%; /* Makes the image circular */
+            object-fit: cover; /* Ensures the image covers the area without stretching */
+        }
+        #uploadedAvatar {
+            width: 130px;  /* Adjust width for rectangular shape */
+            height: 150px; /* Set height to maintain rectangle */
+            object-fit: cover; /* Ensures the image covers the area without stretching */
+            border-radius: 8px; /* Rounded corners for a softer look */
+        }
+      /* Custom CSS for padding and styling */
+      .card {
+        margin-bottom: 20px;
+        min-height: 400px; /* Adjust as needed */
+      }
+      .chart-container {
+        height: 350px; /* Ensure the container has a height */
+      }
+      .chart-card {
+        min-height: 500px; /* Minimum height for consistency */
+        display: flex; /* Use flexbox for the card to enable stretching */
+        flex-direction: column; /* Stack content vertically */
+      }
+      .chart-body {
+        flex-grow: 1; /* Allow the chart area to grow and fill remaining space */
+      }
+      .site-logo {
+        max-width: 100px; /* Adjust the size as needed for the logo */
+      }
+      .kpi-card {
+    min-height: 200px; /* Adjust height as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Align content properly */
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+    border: none;
+    padding: 20px; /* Add padding for better spacing */
+}
+
+      .kpi-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      }
+      .kpi-icon {
+    font-size: 2.5rem; /* Adjust icon size */
+    margin-right: 1rem; /* Space between icon and value */
+    background: linear-gradient(45deg, #6b46c1, #805ad5);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+      .kpi-label {
+        color: #718096;
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+      .kpi-trend {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+        border-radius: 12px;
+        display: inline-block;
+        margin-top: 8px;
+      }
+      .kpi-trend.up {
+        background-color: #f0fff4;
+        color: #38a169;
+      }
+      .kpi-trend.down {
+        background-color: #fff5f5;
+        color: #e53e3e;
+      }
+      .kpi-header {
+    display: flex; /* Use flexbox to align items */
+    align-items: center; /* Center items vertically */
+    margin-bottom: 1rem; /* Space below header */
+}
+      .alert-card {
+        border-left: 4px solid #f56565;
+        background-color: #fff;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      }
+      .alert-card.warning {
+        border-left-color: #ed8936;
+      }
+      .alert-card.info {
+        border-left-color: #4299e1;
+      }
+      .project-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      }
+      .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+      .status-badge.active {
+        background-color: #ebf8ff;
+        color: #3182ce;
+      }
+      .status-badge.on-hold {
+        background-color: #fff5f7;
+        color: #d53f8c;
+      }
+      .status-badge.completed {
+        background-color: #f0fff4;
+        color: #38a169;
+      }
+      .task-card {
+        display: flex;
+        align-items: center;
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      }
+      .task-priority {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 1rem;
+      }
+
+      .progress-bar-custom {
+        height: 6px;
+        border-radius: 3px;
+        background-color: #edf2f7;
+      }
+      .progress-fill {
+        height: 100%;
+        border-radius: 3px;
+        background: linear-gradient(45deg, #6b46c1, #805ad5);
+        transition: width 0.5s ease;
+      }
+      .status-badge {
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.status-badge.not_started {
+    background-color: #9b59b6; /* Gray for Not Started */
+}
+
+.status-badge.in_progress {
+    background-color: #1abc9c; /* Blue for In Progress */
+}
+
+.status-badge.on_hold {
+    background-color: #f39c12; /* Yellow for On Hold */
+}
+
+.status-badge.completed {
+    background-color: #2e8b57; /* Green for Completed */
+}
+
+.project-card .progress-bar-custom {
+    background-color: #e9ecef;
+    height: 8px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.project-card .progress-fill {
+    background-color: #007bff;
+    height: 100%;
+}
+/* Card1 Styling */
+.card1 {
+    background: linear-gradient(135deg, #00c6ff, #0072ff); /* Blue gradient */
+    color: #ffffff; /* White text for contrast */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Text inside card1 */
+.card1 .card-body h5 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.card1 .card-body p {
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+/* Hover effect */
+.card1:hover {
+    transform: translateY(-5px); /* Slight lift */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+}
+
+/* Add CSS for card and transitions */
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Chart container styling */
+canvas {
+    transition: transform 0.3s ease;
+}
+
+.project-bar {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Tooltip styling */
+.tooltip {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    border-radius: 4px;
+    padding: 5px;
+}
+/* tasks.css */
+
+.taskcard {
+    border-radius: 8px;
+    background-color: #ffffff; /* or any color you prefer */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-height: 400px;
+}
+
+.taskcard-body {
+    padding: 16px; /* Adjust padding as necessary */
+}
+
+.taskcard-title {
+    font-size: 1.25rem; /* Adjust size as necessary */
+}
+
+.task-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.3s;
+}
+
+.task-card:hover {
+    background-color: #f9f9f9; /* Light background on hover */
+}
+
+.task-priority {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.priority-low {
+    background-color: #28a745; /* Green for low priority */
+}
+
+.priority-medium {
+    background-color: #ffc107; /* Yellow for medium priority */
+}
+
+.priority-high {
+    background-color: #dc3545; /* Red for high priority */
+}
+
+.badge {
+    font-weight: bold;
+}
+
+/* Adjust badge colors based on priority */
+.bg-low {
+    background-color: #28a745; /* Green */
+}
+
+.bg-medium {
+    background-color: #ffc107; /* Yellow */
+}
+
+.bg-high {
+    background-color: #dc3545; /* Red */
+}
+
+    .safety-stat {
+        display: inline-block;
+        margin: 0 10px;
+    }
+    
+    .safety-details {
+        padding: 10px;
+        border-top: 1px solid #eee;
+        margin-top: 15px;
+    }
+    
+    #safetyGauge {
+        margin: 0 auto;
+        max-width: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    @media (max-width: 768px) {
+        #safetyGauge {
+            width: 250px !important;
+            height: 250px !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        #safetyGauge {
+            width: 200px !important;
+            height: 200px !important;
+        }
+    }
+/* Updated styles for KPI cards */
+.kpi-card {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: #fff;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+.kpi-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent 70%);
+    transform: rotate(45deg);
+}
+.kpi-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+.kpi-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.kpi-icon {
+    font-size: 3rem;
+    margin-right: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+.kpi-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+.kpi-label {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+.kpi-trend {
+    font-size: 1rem;
+    padding: 5px 10px;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: inline-block;
+    margin-top: 1rem;
+}
+.kpi-trend.up {
+    color: #4CAF50;
+}
+.kpi-trend.down {
+    color: #F44336;
+}
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    .kpi-card {
+        margin-bottom: 1rem;
+    }
+}
+</style>
+  </head>
+
+<body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Menu -->
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+          <div class="app-brand demo">
+            <a href="#" class="app-brand-link">  <!-- Use your actual URL name -->
+              <span class="app-brand-logo demo">
+                <img src="{% static 'assets/img/logo/s.png' %}" alt="Logo" style="width: 50px; height: auto;" />
+              </span>
+              <span class="app-brand-text demo menu-text fw-bolder ms-2">SafeNet</span>
+            </a>
+
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+              <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            </a>
+          </div>
+
+          <div class="menu-inner-shadow"></div>
+
+          <ul class="menu-inner py-1">
+            <!-- Dashboard -->
+            <li class="menu-item active">
+              <a href="{% url 'dashboard:dashboard' %}" class="menu-link"> <!-- Use your actual URL name -->
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Analytics">Dashboard</div>
+              </a>
+            </li>
+
+            <li class="menu-item">
+              <a href="{% url 'notifications:notification_list' %}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-bell"></i>
+                <div data-i18n="Notifications">Notifications</div>
+              </a>
+            </li>
+
+            <!-- Projects -->
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Projects</span></li>
+
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-briefcase"></i>
+                <div data-i18n="Project Management">Project</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="{% url 'project_list' %}" class="menu-link"> <!-- Use your actual URL name -->
+                    <div data-i18n="View Projects">View Projects</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'create_project' %}" class="menu-link"> <!-- Use your actual URL name -->
+                    <div data-i18n="Create Project">Create Project</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Tasks -->
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-check-square"></i>
+                <div data-i18n="Project Management">Task</div>
+              </a>
+
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="{% url 'tasks:task_list' %}" class="menu-link"> <!-- Use your actual URL name -->
+                    <div data-i18n="View Projects">View Tasks</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'tasks:create_task' %}" class="menu-link"> <!-- Use your actual URL name -->
+                    <div data-i18n="Create Project">Create Task</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Data View -->
+            <li class="menu-item">
+              <a href="{% url 'data_explorer:data_explorer_home' %}" class="menu-link"> <!-- Use your actual URL name -->
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Data View">Data Explorer</div>
+              </a>
+            </li>
+
+            <!-- Data Leakage Alert -->
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Security</span></li>
+            <li class="menu-item">
+              <a href="{% url 'dataleakage:dashboard' %}" class="menu-link"> <!-- Use your actual URL name -->
+                <i class="menu-icon tf-icons bx bx-shield-quarter"></i>
+                <div data-i18n="Data Leakage Alert">Data Leakage</div>
+              </a>
+            </li>
+          </ul>
+        </aside>
+        <!-- / Menu -->
+
+        <!-- Layout container -->
+        <div class="layout-page">
+          <!-- Navbar -->
+          <nav
+            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+            id="layout-navbar"
+          >
+            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <i class="bx bx-menu bx-sm"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+              <!-- Search -->
+              <div class="navbar-nav align-items-center">
+                <div class="nav-item d-flex align-items-center">
+                  <i class="bx bx-search fs-4 lh-0"></i>
+                  <input
+                    type="text"
+                    class="form-control border-0 shadow-none"
+                    placeholder="Search..."
+                    aria-label="Search..."
+                  />
+                </div>
+              </div>
+              <!-- /Search -->
+
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <!-- User -->
+                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                        <img
+                            src="{{ user.profile.profile_picture.url|default:'media/profile_pics/default_avatar.png' }}" alt="Profile Picture"
+                            class="w-px-40 h-px-40 rounded-circle"
+                            style="object-fit: cover;" />
+                    </div>
+
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <div class="d-flex">
+                            <div class="flex-grow-1">
+                                <span class="fw-semibold d-block">
+                                    {% if user.first_name and user.last_name %}
+                                        {{ user.first_name }} {{ user.last_name }}
+                                    {% else %}
+                                        {{ user.username }}
+                                    {% endif %}
+                                </span>
+                                <small class="text-muted">
+                                    {% if user.is_superuser %}
+                                        Admin
+                                    {% else %}
+                                        User
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="{% url 'accounts:account_settings' %}">
+                        <i class="bx bx-user me-2"></i>
+                        <span class="align-middle">My Profile</span>
+                      </a>
+                    </li>
+                    <li>
+                        <form action="{% url 'accounts:logout' %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <a class="dropdown-item" href="#" onclick="this.closest('form').submit(); return false;">
+                                <i class="bx bx-power-off me-2"></i>
+                                <span class="align-middle">Log Out</span>
+                            </a>
+                        </form>
+                    </li>
+                  </ul>
+                </li>
+                <!--/ User -->
+              </ul>
+            </div>
+          </nav>
+          <!-- / Navbar -->
+
+        <!-- content-wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">Dashboard</h4>
+
+        <div class="row">
+            <div class="col-lg-12 mb-4 order-0">
+                <div class="card1">
+                    <div class="d-flex align-items-end row">
+                        <div class="col-sm-7">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">Welcome {{ user.first_name }}! 🎉</h5>
+                                <p class="mb-4">
+                                    You have {{ total_projects }} active projects and {{ total_tasks }} pending tasks.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards Row -->
+<div class="row g-4 mb-4">
+    <!-- Total Projects KPI -->
+    <div class="col-md-3 col-sm-6">
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <i class="fas fa-project-diagram kpi-icon"></i>
+                <div>
+                    <div class="kpi-value">{{ total_projects }}</div>
+                    <div class="kpi-label">Total Projects</div>
+                </div>
+            </div>
+            <div class="kpi-trend {% if project_growth > 0 %}up{% else %}down{% endif %}">
+                <i class="fas fa-arrow-{% if project_growth > 0 %}up{% else %}down{% endif %}"></i>
+                {{ project_growth|floatformat:1 }}% vs last month
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Tasks KPI -->
+    <div class="col-md-3 col-sm-6">
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <i class="fas fa-tasks kpi-icon"></i>
+                <div>
+                    <div class="kpi-value">{{ total_tasks }}</div>
+                    <div class="kpi-label">Total Tasks</div>
+                </div>
+            </div>
+            <div class="kpi-trend {% if task_growth > 0 %}up{% else %}down{% endif %}">
+                <i class="fas fa-arrow-{% if task_growth > 0 %}up{% else %}down{% endif %}"></i>
+                {{ task_growth|floatformat:1 }}% vs last month
+            </div>
+        </div>
+    </div>
+
+<!-- Safety Score KPI -->
+<div class="col-md-3 col-sm-6">
+    <div class="kpi-card">
+        <div class="kpi-header">
+            <i class="fas fa-shield-alt kpi-icon"></i>
+            <div>
+                <div class="kpi-value">{{ user.profile.sensitivity_score|floatformat:1 }}%</div>
+                <div class="kpi-label">Safety Score</div>
+            </div>
+        </div>
+        <div class="kpi-trend {% if user.profile.sensitivity_score >= 80 %}up{% else %}down{% endif %}">
+            <i class="fas fa-arrow-{% if user.profile.sensitivity_score >= 80 %}up{% else %}down{% endif %}"></i>
+            {{ user.profile.sensitivity_score|floatformat:1 }}% vs last month
+        </div>
+    </div>
+</div>
+
+<!-- Replace the Active Users KPI card with this updated version -->
+<div class="col-md-3 col-sm-6">
+    <div class="kpi-card">
+        <div class="kpi-header">
+            <i class="fas fa-users kpi-icon"></i>
+            <div>
+                <div class="kpi-value">{{ total_users }}</div>
+                <div class="kpi-label">Total Users</div>
+            </div>
+        </div>
+        <div class="kpi-trend {% if user_growth > 0 %}up{% else %}down{% endif %}">
+            <i class="fas fa-arrow-{% if user_growth > 0 %}up{% else %}down{% endif %}"></i>
+            {{ user_growth|floatformat:1 }}% vs last month
+        </div>
+    </div>
+</div>
+</div>
+
+        <!-- Alerts Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="fas fa-bell me-2"></i>Recent Alerts
+                        </h5>
+                        {% for alert in recent_alerts %}
+                        <div class="alert-card">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-{% if alert.notification_type == 'data_leak' %}shield-alt{% else %}info-circle{% endif %} text-{{ alert.severity }} me-3"></i>
+                                <div>
+                                    <h6 class="mb-1">{{ alert.message }}</h6>
+                                    <p class="mb-0 text-muted">{{ alert.timestamp|timesince }} ago</p>
+                                </div>
+                                <span class="ms-auto badge bg-{{ alert.severity }}">{{ alert.get_severity_display }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Overview -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="fas fa-folder-open me-2"></i>Projects Overview
+                        </h5>
+                        {% for project in all_projects %}
+                        <div class="project-card">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <div>
+                                    <h6 class="mb-1">{{ project.name }}</h6>
+                                    <p class="text-muted mb-0">{{ project.description|truncatechars:50 }}</p>
+                                </div>
+                                <span class="status-badge {{ project.status }}">{{ project.get_status_display }}</span>
+                            </div>
+                            <div class="progress-bar-custom">
+                                <div class="progress-fill" style="width: {{ project.progress|floatformat:0 }}%"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div class="row">
+    <!-- Upcoming Tasks Card -->
+<div class="col-md-6">
+    <div class="taskcard mb-4">
+        <div class="taskcard-body">
+            <h5 class="taskcard-title mb-4">
+                <i class="fas fa-clock me-2"></i>Upcoming Tasks
+            </h5>
+            {% for task in upcoming_tasks %}
+            <div class="task-card">
+                <div class="task-priority priority-{{ task.priority }}"></div>
+                <div class="flex-grow-1">
+                    <h6 class="mb-1">{{ task.task_name }}</h6>
+                    <p class="text-muted mb-0">Due in: <strong>{{ task.end_date|timeuntil }}</strong></p>
+                </div>
+                <span class="badge bg-{{ task.priority }}">{{ task.get_priority_display }} Priority</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+    <!-- Safety Score-Card -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-4">
+                    <i class="fas fa-shield-alt me-2"></i>Safety Score Analysis
+                </h5>
+                <div class="d-flex flex-column align-items-center text-center">
+                    <!-- Safety Gauge Chart Container -->
+                    <div id="safetyGauge" style="width: 100%; max-width: 150px; height: auto;"></div>
+                    <!-- Safety Score Info -->
+                    <div class="mt-3">
+                        <h6 class="mb-1">Current Safety Score: {{ user.profile.sensitivity_score|floatformat:1 }}%</h6>
+                        <p class="text-muted small mb-0">
+                            Status: <span class="badge bg-{{ safety_badge }}">{{ safety_status }}</span><br>
+                            Last Updated: {{ user.profile.last_modified|default:"Not available" }}<br>
+                            {% if user.profile.is_blocked %}
+                                <span class="text-danger">Account Blocked</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Project Timeline Card -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-4">
+                    <i class="fas fa-project-diagram me-2"></i>Project Timeline Overview
+                </h5>
+                <div class="overflow-x-auto">
+                    <div class="min-w-[800px]" id="timeline-container">
+                        <!-- Timeline content will be dynamically generated -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Replace the existing timeline JavaScript with this new version -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const projects = [
+            {% for project in projects_timeline %}
+            {
+                name: "{{ project.name }}",
+                startDate: "{{ project.start_date|date:'Y-m-d' }}",
+                endDate: "{{ project.end_date|date:'Y-m-d' }}",
+                color: "{{ project.status }}" === "completed" ? "bg-success" :
+                       "{{ project.status }}" === "in_progress" ? "bg-primary" :
+                       "{{ project.status }}" === "on_hold" ? "bg-warning" : "bg-danger"
+            },
+            {% endfor %}
+        ];
+
+        function getDatesInRange(projects) {
+            const dates = projects.reduce((acc, project) => {
+                acc.push(new Date(project.startDate));
+                acc.push(new Date(project.endDate));
+                return acc;
+            }, []);
+
+            const minDate = new Date(Math.min.apply(null, dates));
+            const maxDate = new Date(Math.max.apply(null, dates));
+
+            const months = [];
+            let currentDate = new Date(minDate);
+            currentDate.setDate(1);
+
+            while (currentDate <= maxDate) {
+                months.push(new Date(currentDate));
+                currentDate.setMonth(currentDate.getMonth() + 1);
+            }
+
+            return { months, minDate, maxDate };
+        }
+
+        function createTimeline() {
+            const { months, minDate } = getDatesInRange(projects);
+            const totalMonths = months.length;
+
+            // Create header
+            const header = document.createElement('div');
+            header.className = 'row mb-4';
+            header.innerHTML = `
+                <div class="col-3">Project</div>
+                <div class="col-9 d-flex">
+                    ${months.map(month => `
+                        <div class="flex-fill text-center">
+                            ${month.toLocaleDateString('default', { month: 'short', year: '2-digit' })}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            // Create project bars
+            const projectsContainer = document.createElement('div');
+            projectsContainer.className = 'd-flex flex-column gap-3';
+
+            projects.forEach(project => {
+                const startDate = new Date(project.startDate);
+                const endDate = new Date(project.endDate);
+
+                const startOffset = (startDate.getTime() - minDate.getTime()) / (30.44 * 24 * 60 * 60 * 1000);
+                const duration = (endDate.getTime() - startDate.getTime()) / (30.44 * 24 * 60 * 60 * 1000);
+
+                const startPercentage = (startOffset / totalMonths) * 100;
+                const widthPercentage = (duration / totalMonths) * 100;
+
+                const projectDiv = document.createElement('div');
+                projectDiv.className = 'row align-items-center';
+                projectDiv.innerHTML = `
+                    <div class="col-3">${project.name}</div>
+                    <div class="col-9 d-flex align-items-center" style="height: 2rem;">
+                        <div class="${project.color} rounded" 
+                             style="margin-left: ${startPercentage}%; width: ${widthPercentage}%; height: 100%;"
+                             data-bs-toggle="tooltip" 
+                             title="${project.startDate} to ${project.endDate}"></div>
+                    </div>
+                `;
+                projectsContainer.appendChild(projectDiv);
+            });
+
+            // Create legend
+            const legend = document.createElement('div');
+            legend.className = 'd-flex gap-4 mt-4';
+            legend.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <div class="bg-success rounded me-2" style="width: 1rem; height: 1rem;"></div>
+                    <span>Completed</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary rounded me-2" style="width: 1rem; height: 1rem;"></div>
+                    <span>In Progress</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="bg-warning rounded me-2" style="width: 1rem; height: 1rem;"></div>
+                    <span>On Hold</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="bg-danger rounded me-2" style="width: 1rem; height: 1rem;"></div>
+                    <span>Not Started</span>
+                </div>
+            `;
+
+            // Add everything to container
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = '';
+            container.appendChild(header);
+            container.appendChild(projectsContainer);
+            container.appendChild(legend);
+
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        }
+
+        createTimeline();
+    });
+</script>
+
+        <!-- Footer -->
+        <footer class="content-footer footer bg-footer-theme">
+            <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                <div class="mb-2 mb-md-0">
+                    ©
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    , made with ❤️ by
+                    <a href="https://vitap.ac.in/" target="_blank">VITians</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- Content Backdrop -->
+    <div class="content-backdrop fade"></div>
+</div>
+
+</div>
+<!-- / Layout page -->
+</div>
+
+<!-- Overlay -->
+<div class="layout-overlay layout-menu-toggle"></div>
+</div>
+<!-- / Layout wrapper -->
+
+<!-- Core JS -->
+<!-- build:js assets/vendor/js/core.js -->
+<script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+<script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+
+<script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+<!-- endbuild -->
+
+<!-- Vendors JS -->
+<script src="{% static 'assets/vendor/libs/apex-charts/apexcharts.js' %}"></script>
+
+<!-- Main JS -->
+<script src="{% static 'assets/js/main.js' %}"></script>
+
+<!-- Page JS -->
+<script src="{% static 'assets/js/dashboards-analytics.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<!-- JavaScript for Charts and Tooltips -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+<script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+
+<script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+<!-- endbuild -->
+
+<!-- Vendors JS -->
+
+<!-- Main JS -->
+<script src="{% static 'assets/js/main.js' %}"></script>
+
+<!-- Page JS -->
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<!-- Include Chart.js from CDN -->
+<<!-- Load Google Charts Library -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['gauge']});
+    google.charts.setOnLoadCallback(drawGauge);
+
+    function drawGauge() {
+        // Data for the gauge
+        var data = google.visualization.arrayToDataTable([
+            ['Label', 'Value'],
+            ['Safety', {{ user.profile.sensitivity_score }}]
+        ]);
+
+        // Gauge options
+        var options = {
+            width: 150, height: 150, // Set a fixed width/height within the max-width container
+            redFrom: 0, redTo: 30,
+            yellowFrom: 30, yellowTo: 70,
+            greenFrom: 70, greenTo: 100,
+            minorTicks: 5
+        };
+
+        // Draw the gauge chart
+        var chart = new google.visualization.Gauge(document.getElementById('safetyGauge'));
+        chart.draw(data, options);
+    }
+</script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['gauge']});
+    google.charts.setOnLoadCallback(drawGauge);
+
+    function drawGauge() {
+        var data = google.visualization.arrayToDataTable([
+            ['Label', 'Value'],
+            ['Safety', {{ user.profile.sensitivity_score }}]
+        ]);
+
+        var options = {
+            width: 150, 
+            height: 150,
+            redFrom: 80, redTo: 100,    // High risk
+            yellowFrom: 50, yellowTo: 80, // Medium risk
+            greenFrom: 0, greenTo: 50,    // Low risk
+            minorTicks: 5,
+            animation: {
+                duration: 1000,
+                easing: 'out'
+            }
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('safetyGauge'));
+        chart.draw(data, options);
+    }
+</script>
+</body>
+</html>

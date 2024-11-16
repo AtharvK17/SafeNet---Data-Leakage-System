@@ -1,0 +1,788 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html
+  lang="en"
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="{% static 'assets' %}"
+  data-template="vertical-menu-template-free"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>SafeNet : Accounts settings</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon/favicon.png' %}" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/boxicons.css' %}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/core.css' %}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/theme-default.css' %}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{% static 'assets/css/demo.css' %}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/apex-charts/apex-charts.css' %}" />
+
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{% static 'assets/js/config.js' %}"></script>
+      <style>
+        .avatar img {
+            width: 40px; /* Set the desired size */
+            height: 40px; /* Set the desired size */
+            border-radius: 50%; /* Makes the image circular */
+            object-fit: cover; /* Ensures the image covers the area without stretching */
+        }
+        #uploadedAvatar {
+            width: 130px;  /* Adjust width for rectangular shape */
+            height: 150px; /* Set height to maintain rectangle */
+            object-fit: cover; /* Ensures the image covers the area without stretching */
+            border-radius: 8px; /* Rounded corners for a softer look */
+        }
+        .table-responsive {
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+}
+
+.table thead th {
+    white-space: nowrap; /* Prevents header cells from wrapping */
+    overflow: hidden; /* Hides overflow */
+    text-overflow: ellipsis; /* Adds ellipsis for overflow text */
+}
+
+ /* Example styles, adjust as needed */
+        .table-container { padding: 20px; }
+        .table-controls { margin-bottom: 20px; }
+        .status.active { color: green; }
+        .status.inactive { color: red; }
+        .pagination { margin-top: 20px; }
+        /* Modal styles */
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4); padding-top: 60px; }
+        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 80%; }
+        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
+        .close:hover, .close:focus { color: black; text-decoration: none; cursor: pointer; }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f4f4f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.table-container {
+  width: 90%;
+  max-width: 1000px;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  transition: transform 0.2s ease-in-out;
+}
+
+
+
+.table-controls {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #4C51BF;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+#search {
+  flex: 1;
+  padding: 10px 15px;
+  border: 2px solid #4C51BF;
+  border-radius: 5px;
+  font-size: 1em;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-right: 10px;
+}
+
+#search:focus {
+  border-color: #3182CE;
+  box-shadow: 0 0 5px rgba(76, 81, 191, 0.5);
+}
+
+#filter {
+  padding: 10px 20px; /* Increased padding for a more substantial look */
+  border: none; /* Remove border for a cleaner design */
+  border-radius: 5px; /* Soft rounded corners */
+  font-size: 1em; /* Consistent font size */
+  margin-left: 10px;
+  background-color: #ffffff; /* White background for contrast */
+  color: #333; /* Dark text for readability */
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s; /* Smooth transitions */
+  cursor: pointer; /* Change cursor to pointer */
+  position: relative; /* Position relative for the arrow */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Hover state */
+#filter:hover {
+  background-color: #f0f4ff; /* Light background on hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+/* Focus state */
+#filter:focus {
+  outline: none; /* Remove default focus outline */
+  box-shadow: 0 0 0 2px rgba(76, 81, 191, 0.5); /* Custom focus ring */
+  background-color: #f7f9ff; /* Slightly different background on focus */
+}
+
+/* Custom dropdown arrow */
+#filter::after {
+  content: "▼"; /* Using a simple character for the arrow */
+  position: absolute; /* Positioning within the dropdown */
+  top: 50%; /* Center vertically */
+  right: 15px; /* Position from the right */
+  transform: translateY(-50%); /* Adjust for perfect centering */
+  font-size: 0.8em; /* Smaller arrow */
+  color: #4C51BF; /* Color to match the theme */
+  pointer-events: none; /* Prevent events on the arrow */
+}
+
+/* Style the options within the dropdown */
+#filter option {
+  padding: 10px; /* Consistent padding */
+  color: #333; /* Dark text for readability */
+  background-color: #fff; /* White background for options */
+}
+
+/* Additional styles for mobile responsiveness */
+@media (max-width: 600px) {
+  #filter {
+      width: 100%; /* Full width on smaller screens */
+      margin-left: 0; /* Reset margin */
+  }
+}
+
+
+
+#datatable {
+  width: 100%;
+  border-collapse: collapse;
+  color: #333;
+}
+
+#datatable thead {
+  background-color: #4C51BF;
+  color: #fff;
+}
+
+#datatable thead th {
+  padding: 12px 15px;
+  font-weight: bold;
+  text-align: left;
+  font-size: 1.10em;
+}
+
+#datatable tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+#datatable tbody tr:hover {
+  background-color: #d8dade;
+}
+
+#datatable tbody td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  font-size: 0.97em;
+  font-weight: bold;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+.status.active {
+  color: #fff;
+  background-color: #38A169;
+}
+
+.status.inactive {
+  color: #fff;
+  background-color: #E53E3E;
+}
+
+.action-btn {
+  background-color: transparent;
+  color: #3182CE;
+  border: 2px solid transparent;
+  padding: 6px;
+  border-radius: 4px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: color 0.2s, transform 0.2s, border-color 0.2s;
+  margin: 0 5px;
+}
+
+.action-btn:hover {
+  color: #2B6CB0;
+  transform: scale(1.1);
+}
+
+.action-btn.edit:hover {
+  color: #ECC94B;
+}
+
+.action-btn.delete:hover {
+  color: #E53E3E;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 15px;
+  background-color: #f4f4f9;
+  border-top: 1px solid #eee;
+}
+
+.page-btn {
+  background-color: #4C51BF;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.page-btn:hover {
+  background-color: #3b49a2;
+  transform: translateY(-1px);
+}
+
+.table-responsive {
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+    overflow-x: auto; /* Enable horizontal scroll */
+    min-width: 100%;
+}
+
+.table {
+    margin-bottom: 0;
+    min-width: 800px; /* Ensure minimum width to force horizontal scroll if needed */
+}
+
+.edit-row .form-control {
+    min-width: 100px;
+    width: 100%; /* Make input take full cell width */
+    height: calc(1.5em + 0.5rem + 2px);
+}
+
+/* Style both scrollbars */
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+    height: 8px; /* Height for horizontal scrollbar */
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Style the corner where scrollbars meet */
+.table-responsive::-webkit-scrollbar-corner {
+    background: #f1f1f1;
+}
+
+/* Ensure action buttons are always visible */
+.btn-group {
+    display: flex;
+    gap: 0.25rem;
+    min-width: 100px; /* Ensure minimum width for buttons */
+    justify-content: flex-start;
+}
+
+/* Make action column sticky */
+.action-column {
+    position: sticky;
+    right: 0;
+    background: #fff;
+    z-index: 2;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+}
+      </style>
+  </head>
+
+  <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Menu -->
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+          <div class="app-brand demo">
+            <a href="#" class="app-brand-link">  <!-- Use your actual URL name -->
+              <span class="app-brand-logo demo">
+                <img src="{% static 'assets/img/logo/s.png' %}" alt="Logo" style="width: 50px; height: auto;" />
+              </span>
+              <span class="app-brand-text demo menu-text fw-bolder ms-2">SafeNet</span>
+            </a>
+
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+              <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            </a>
+          </div>
+
+          <div class="menu-inner-shadow"></div>
+
+          <ul class="menu-inner py-1">
+            <!-- Dashboard -->
+            <li class="menu-item">
+              <a href="{% url 'dashboard:dashboard' %}" class="menu-link"> <!-- Use your actual URL name -->
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Analytics">Dashboard</div>
+              </a>
+            </li>
+
+            <li class="menu-item">
+              <a href="{% url 'notifications:notification_list' %}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-bell"></i>
+                <div data-i18n="Notifications">Notifications</div>
+              </a>
+            </li>
+
+            <!-- Projects -->
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Projects</span></li>
+
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-briefcase"></i>
+                <div data-i18n="Project Management">Project</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="{% url 'project_list' %}" class="menu-link"> <!-- Use your actual URL name -->
+                    <div data-i18n="View Projects">View Projects</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'create_project' %}" class="menu-link"> <!-- Use your actual URL name -->
+                    <div data-i18n="Create Project">Create Project</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Tasks -->
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-check-square"></i>
+                <div data-i18n="Project Management">Task</div>
+              </a>
+
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="{% url 'tasks:task_list' %}" class="menu-link"> <!-- Use your actual URL name -->
+                    <div data-i18n="View Projects">View Tasks</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'tasks:create_task' %}" class="menu-link"> <!-- Use your actual URL name -->
+                    <div data-i18n="Create Project">Create Task</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Data View -->
+            <li class="menu-item">
+              <a href="{% url 'data_explorer:data_explorer_home' %}" class="menu-link"> <!-- Use your actual URL name -->
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Data View">Data View</div>
+              </a>
+            </li>
+
+            <!-- Data Leakage Alert -->
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Security</span></li>
+            <li class="menu-item">
+              <a href="{% url 'dataleakage:dashboard' %}" class="menu-link"> <!-- Use your actual URL name -->
+                <i class="menu-icon tf-icons bx bx-shield-quarter"></i>
+                <div data-i18n="Data Leakage Alert">Data Leakage</div>
+              </a>
+            </li>
+          </ul>
+        </aside>
+        <!-- / Menu -->
+
+        <!-- Layout container -->
+        <div class="layout-page">
+          <!-- Navbar -->
+          <nav
+            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+            id="layout-navbar"
+          >
+            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <i class="bx bx-menu bx-sm"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+              <!-- Search -->
+              <div class="navbar-nav align-items-center">
+                <div class="nav-item d-flex align-items-center">
+                  <i class="bx bx-search fs-4 lh-0"></i>
+                  <input
+                    type="text"
+                    class="form-control border-0 shadow-none"
+                    placeholder="Search..."
+                    aria-label="Search..."
+                  />
+                </div>
+              </div>
+              <!-- /Search -->
+
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <!-- User -->
+                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                        {% if profile.profile_picture and profile.profile_picture.url %}
+                            <img
+                                src="{% if profile.profile_picture %}{{ profile.profile_picture.url }}{% else %}{% static 'assets/img/avatars/default_profile.png' %}{% endif %}"
+                                alt="{{ profile.user.username }}'s Profile Picture"
+                                id="uploadedAvatar"
+                                class="w-px-40 h-px-40 rounded-circle"
+                                style="object-fit: cover;"
+                            >
+
+                        {% else %}
+                            <img
+                                src="{% static 'assets/img/avatars/default_profile.png' %}"
+                                alt="Default Profile Picture"
+                                id="uploadedAvatar"
+                                class="w-px-40 h-px-40 rounded-circle"
+                                style="object-fit: cover;"
+                            >
+                        {% endif %}
+                    </div>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <div class="d-flex">
+                            <div class="flex-grow-1">
+                                <span class="fw-semibold d-block">
+                                    {% if profile.first_name and profile.last_name %}
+                                        {{ profile.first_name }} {{ profile.last_name }}
+                                    {% else %}
+                                        {{ profile.user.username }}
+                                    {% endif %}
+                                </span>
+                                <small class="text-muted">
+                                    {% if user.is_superuser %}
+                                        Admin
+                                    {% else %}
+                                        User
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0);">
+                        <i class="bx bx-user me-2"></i>
+                        <span class="align-middle">My Profile</span>
+                      </a>
+                    </li>
+                    <li>
+                        <form action="{% url 'accounts:logout' %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <a class="dropdown-item" href="#" onclick="this.closest('form').submit(); return false;">
+                                <i class="bx bx-power-off me-2"></i>
+                                <span class="align-middle">Log Out</span>
+                            </a>
+                        </form>
+                    </li>
+                  </ul>
+                </li>
+                <!--/ User -->
+              </ul>
+            </div>
+          </nav>
+         <!-- / Navbar -->
+
+
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="card">
+            <h5 class="card-header d-flex justify-content-between align-items-center">
+                <span>{{ data_file.filename }} Data View</span>
+            </h5>
+            <div class="card-body">
+                <div class="table-responsive">
+                    {% if data %}
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                {% for column in data.columns %}
+                                <th style="position: sticky; top: 0; background: #fff; z-index: 1;">{{ column }}</th>
+                                {% endfor %}
+                                <th style="position: sticky; top: 0; right: 0; background: #fff; z-index: 2;" class="action-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data.rows %}
+                            <tr id="row-{{ forloop.counter0 }}">
+                                {% for value in row %}
+                                <td class="data-cell align-middle">{{ value }}</td>
+                                {% endfor %}
+                                <td class="align-middle action-column">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-icon btn-outline-primary btn-sm" onclick="editRow({{ forloop.counter0 }})">
+                                            <i class="bx bx-edit-alt"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-icon btn-outline-danger btn-sm" onclick="confirmDelete({{ forloop.counter0 }})">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="edit-row-{{ forloop.counter0 }}" class="edit-row" style="display: none;">
+                                <form id="edit-form-{{ forloop.counter0 }}" method="POST" action="{% url 'data_explorer:update_row' file_id=data_file.id row_id=forloop.counter0 %}">
+                                    {% csrf_token %}
+                                    {% for value in row %}
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" name="{{ data.columns|get_item:forloop.counter0 }}" value="{{ value }}" required>
+                                    </td>
+                                    {% endfor %}
+                                    <td class="action-column">
+                                        <div class="btn-group">
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                <i class="bx bx-save"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="cancelEdit({{ forloop.counter0 }})">
+                                                <i class="bx bx-x"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </form>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="text-center py-5">No data available to display.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this row?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        <!-- Footer -->
+        <footer class="content-footer footer bg-footer-theme">
+            <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                <div class="mb-2 mb-md-0">
+                    ©
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    , made with ❤️ by
+                    <a href="https://vitap.ac.in/" target="_blank">VITians</a>
+                </div>
+            </div>
+        </footer>
+        <!-- / Footer -->
+
+        <div class="content-backdrop fade"></div>
+    </div>
+</div>
+
+<!-- / Layout page -->
+</div>
+      </div>
+
+<!-- Overlay -->
+<div class="layout-overlay layout-menu-toggle"></div>
+</div>
+<!-- / Layout wrapper -->
+
+<!-- Core JS -->
+<!-- build:js assets/vendor/js/core.js -->
+<script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+<script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+
+<script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+<!-- endbuild -->
+
+<!-- Vendors JS -->
+<script src="{% static 'assets/vendor/libs/apex-charts/apexcharts.js' %}"></script>
+
+<!-- Main JS -->
+<script src="{% static 'assets/js/main.js' %}"></script>
+
+<!-- Page JS -->
+<script src="{% static 'assets/js/dashboards-analytics.js' %}"></script>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<script>
+let currentDeleteRowId = null;
+
+function editRow(rowId) {
+    // Hide the display row and show the edit row
+    document.getElementById(`row-${rowId}`).style.display = 'none';
+    document.getElementById(`edit-row-${rowId}`).style.display = 'table-row';
+}
+
+function cancelEdit(rowId) {
+    // Hide the edit row and show the display row
+    document.getElementById(`edit-row-${rowId}`).style.display = 'none';
+    document.getElementById(`row-${rowId}`).style.display = 'table-row';
+}
+
+function confirmDelete(rowId) {
+    const fileId = {{ data_file.id }}; // Get the file ID
+    const confirmed = confirm('Are you sure you want to delete this row?');
+
+    if (confirmed) {
+        fetch(`/DataExplorer/delete-row/${fileId}/`, {  // Make sure the path is correct
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token
+            },
+            body: JSON.stringify({ row_id: rowId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const row = document.getElementById(`row-${rowId}`);
+                row.parentNode.removeChild(row);
+                alert('Row deleted successfully');
+            } else {
+                alert('Error deleting row');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting row');
+        });
+    }
+}
+
+
+
+
+// Form submission handling
+document.querySelectorAll('form[id^="edit-form-"]').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const rowId = this.id.split('-')[2];
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update the display row with new values
+                const displayRow = document.getElementById(`row-${rowId}`);
+                const cells = displayRow.getElementsByClassName('data-cell');
+                Object.entries(data.updated_values).forEach(([column, value], index) => {
+                    cells[index].textContent = value;
+                });
+                
+                // Hide edit form and show display row
+                cancelEdit(rowId);
+                toastr.success('Row updated successfully');
+            } else {
+                toastr.error('Error updating row');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            toastr.error('Error updating row');
+        });
+    });
+});
+</script>
+
+</body>
+</html>

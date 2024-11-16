@@ -1,0 +1,649 @@
+{% load static %}
+<!DOCTYPE html>
+<html
+  lang="en"
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="{% static 'assets' %}"
+  data-template="vertical-menu-template-free"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>SafeNet : Notifications</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon/favicon.png' %}" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/boxicons.css' %}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/core.css' %}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/theme-default.css' %}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{% static 'assets/css/demo.css' %}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/apex-charts/apex-charts.css' %}" />
+
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{% static 'assets/js/config.js' %}"></script>
+      <style>
+        .avatar img {
+            width: 40px; /* Set the desired size */
+            height: 40px; /* Set the desired size */
+            border-radius: 50%; /* Makes the image circular */
+            object-fit: cover; /* Ensures the image covers the area without stretching */
+        }
+        #uploadedAvatar {
+            width: 130px;  /* Adjust width for rectangular shape */
+            height: 150px; /* Set height to maintain rectangle */
+            object-fit: cover; /* Ensures the image covers the area without stretching */
+            border-radius: 8px; /* Rounded corners for a softer look */
+        }
+        .notification-table {
+            max-height: 600px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(var(--bs-primary-rgb), 0.6) transparent;
+        }
+
+        /* Custom scrollbar for Webkit browsers (Chrome, Safari, etc.) */
+        .notification-table::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .notification-table::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 10px;
+        }
+
+        .notification-table::-webkit-scrollbar-thumb {
+            background: rgba(var(--bs-primary-rgb), 0.6);
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .notification-table::-webkit-scrollbar-thumb:hover {
+            background: rgba(var(--bs-primary-rgb), 0.8);
+        }
+
+        /* Keep table header fixed */
+        .notification-table thead th {
+            position: sticky;
+            top: 0;
+            background: var(--bs-body-bg);
+            z-index: 1;
+        }
+
+        /* Add shadow to fixed header */
+        .notification-table thead::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -5px;
+            height: 5px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, transparent 100%);
+        }
+      </style>
+  </head>
+
+  <body>
+    {% csrf_token %}
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Menu -->
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+          <div class="app-brand demo">
+            <a href="#" class="app-brand-link">  <!-- Use your actual URL name -->
+              <span class="app-brand-logo demo">
+                <img src="{% static 'assets/img/logo/s.png' %}" alt="Logo" style="width: 50px; height: auto;" />
+              </span>
+              <span class="app-brand-text demo menu-text fw-bolder ms-2">SafeNet</span>
+            </a>
+
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+              <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            </a>
+          </div>
+
+          <div class="menu-inner-shadow"></div>
+
+          <ul class="menu-inner py-1">
+            <!-- Dashboard -->
+            <li class="menu-item">
+              <a href="{% url 'dashboard:dashboard' %}" class="menu-link"> <!-- Use your actual URL name -->
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Analytics">Dashboard</div>
+              </a>
+            </li>
+              
+            <li class="menu-item active">
+              <a href="{% url 'notifications:notification_list' %}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-bell"></i>
+                <div data-i18n="Notifications">Notifications</div>
+              </a>
+            </li>
+
+            <!-- Projects -->
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Projects</span></li>
+
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-briefcase"></i>
+                <div data-i18n="Project Management">Project</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="{% url 'project_list' %}" class="menu-link"> <!-- Use your actual URL name -->
+                    <div data-i18n="View Projects">View Projects</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'create_project' %}" class="menu-link"> <!-- Use your actual URL name -->
+                    <div data-i18n="Create Project">Create Project</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Tasks -->
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-check-square"></i>
+                <div data-i18n="Project Management">Task</div>
+              </a>
+
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="{% url 'tasks:task_list' %}" class="menu-link"> <!-- Use your actual URL name -->
+                    <div data-i18n="View Projects">View Tasks</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'tasks:create_task' %}" class="menu-link"> <!-- Use your actual URL name -->
+                    <div data-i18n="Create Project">Create Task</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Data View -->
+            <li class="menu-item">
+              <a href="{% url 'data_explorer:data_explorer_home' %}" class="menu-link"> <!-- Use your actual URL name -->
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Data View">Data View</div>
+              </a>
+            </li>
+
+            <!-- Data Leakage Alert -->
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Security</span></li>
+            <li class="menu-item">
+              <a href="{% url 'dataleakage:dashboard' %}" class="menu-link"> <!-- Use your actual URL name -->
+                <i class="menu-icon tf-icons bx bx-shield-quarter"></i>
+                <div data-i18n="Data Leakage Alert">Data Leakage</div>
+              </a>
+            </li>
+          </ul>
+        </aside>
+        <!-- / Menu -->
+
+        <!-- Layout container -->
+        <div class="layout-page">
+          <!-- Navbar -->
+          <nav
+            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+            id="layout-navbar"
+          >
+            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <i class="bx bx-menu bx-sm"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+              <!-- Search -->
+              <div class="navbar-nav align-items-center">
+                <div class="nav-item d-flex align-items-center">
+                  <i class="bx bx-search fs-4 lh-0"></i>
+                  <input
+                    type="text"
+                    class="form-control border-0 shadow-none"
+                    placeholder="Search..."
+                    aria-label="Search..."
+                  />
+                </div>
+              </div>
+              <!-- /Search -->
+
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <!-- User -->
+                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                        <img
+                            src="{{ user.profile.profile_picture.url|default:'media/profile_pics/default_avatar.png' }}" alt="Profile Picture"
+                            class="w-px-40 h-px-40 rounded-circle"
+                            style="object-fit: cover;" />
+                    </div>
+
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <div class="d-flex">
+                            <div class="flex-grow-1">
+                                <span class="fw-semibold d-block">
+                                    {% if profile.first_name and profile.last_name %}
+                                        {{ profile.first_name }} {{ profile.last_name }}
+                                    {% else %}
+                                        {{ profile.user.username }}
+                                    {% endif %}
+                                </span>
+                                <small class="text-muted">
+                                    {% if user.is_superuser %}
+                                        Admin
+                                    {% else %}
+                                        User
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0);">
+                        <i class="bx bx-user me-2"></i>
+                        <span class="align-middle">My Profile</span>
+                      </a>
+                    </li>
+                    <li>
+                        <form action="{% url 'accounts:logout' %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <a class="dropdown-item" href="#" onclick="this.closest('form').submit(); return false;">
+                                <i class="bx bx-power-off me-2"></i>
+                                <span class="align-middle">Log Out</span>
+                            </a>
+                        </form>
+                    </li>
+                  </ul>
+                </li>
+                <!--/ User -->
+              </ul>
+            </div>
+          </nav>
+          <!-- / Navbar -->
+
+ <!-- Content wrapper -->
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold">Notifications</h4>
+            <div class="actions">
+                <button class="btn btn-primary" id="markAllRead">Mark All as Read</button>
+                <button class="btn btn-danger" id="clearAll">Clear All</button>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <select class="form-select" id="typeFilter">
+                            <option value="">All Types</option>
+                            <option value="TASK">Task</option>
+                            <option value="PROJECT">Project</option>
+                            <option value="SECURITY">Security</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="severityFilter">
+                            <option value="">All Severities</option>
+                            <option value="info">Info</option>
+                            <option value="warning">Warning</option>
+                            <option value="danger">Critical</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" id="searchNotification" placeholder="Search notifications...">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-primary w-100" id="resetFilters">Reset Filters</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications List -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive notification-table">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectAll"></th>
+                                <th>Type</th>
+                                <th>Severity</th>
+                                <th>Message</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for notification in notifications %}
+                            <tr class="notification-row {% if not notification.is_read %}unread{% endif %}" data-id="{{ notification.id }}">
+                                <td><input type="checkbox" class="notification-check"></td>
+                                <td>
+                                    <i class="bx 
+                                        {% if notification.notification_type == 'TASK' %}bx-task
+                                        {% elif notification.notification_type == 'PROJECT' %}bx-folder
+                                        {% else %}bx-shield{% endif %} 
+                                        me-2"></i>
+                                    {{ notification.get_notification_type_display }}
+                                </td>
+                                <td>
+                                    <span class="badge bg-{{ notification.severity }} rounded-pill">
+                                        {{ notification.get_severity_display }}
+                                    </span>
+                                </td>
+                                <td class="notification-message">{{ notification.message|truncatechars:50 }}</td>
+                                <td>{{ notification.timestamp|timesince }} ago</td>
+                                <td>
+                                    <span class="badge {% if notification.is_read %}bg-success{% else %}bg-warning{% endif %}">
+                                        {{ notification.is_read|yesno:"Read,Unread" }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-icon" data-bs-toggle="dropdown">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item view-details" href="#">View Details</a></li>
+                                            <li><a class="dropdown-item mark-read" href="#">Mark as {{ notification.is_read|yesno:"Unread,Read" }}</a></li>
+                                            <li><a class="dropdown-item text-danger delete-notification" href="#">Delete</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <i class="bx bx-bell-off fs-1 text-muted"></i>
+                                    <p class="mt-2">No notifications found</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if notifications.has_other_pages %}
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="pagination-info">
+                        Showing {{ notifications.start_index }} to {{ notifications.end_index }} of {{ notifications.paginator.count }} notifications
+                    </div>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            {% if notifications.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ notifications.previous_page_number }}">Previous</a>
+                            </li>
+                            {% endif %}
+                            
+                            {% for num in notifications.paginator.page_range %}
+                            <li class="page-item {% if notifications.number == num %}active{% endif %}">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                            {% endfor %}
+                            
+                            {% if notifications.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ notifications.next_page_number }}">Next</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Detail Modal -->
+    <div class="modal fade" id="notificationModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Notification Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="notificationDetails"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+       <!-- Footer -->
+        <footer class="content-footer footer bg-footer-theme">
+          <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+            <div class="mb-2 mb-md-0">
+              ©
+              <script>
+                document.write(new Date().getFullYear());
+              </script>
+              , made with ❤️ by
+              <a href="https://vitap.ac.in/" target="_blank">VITians</a>
+            </div>
+          </div>
+        </footer>
+        <!-- / Footer -->
+
+        <div class="content-backdrop fade"></div>
+    </div>
+<!-- Content wrapper -->
+</div>
+<!-- / Layout page -->
+</div>
+
+<!-- Overlay -->
+<div class="layout-overlay layout-menu-toggle"></div>
+</div>
+<!-- / Layout wrapper -->
+
+<!-- Core JS -->
+<!-- build:js assets/vendor/js/core.js -->
+<script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+<script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+
+<script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+<!-- endbuild -->
+
+<!-- Vendors JS -->
+<script src="{% static 'assets/vendor/libs/apex-charts/apexcharts.js' %}"></script>
+
+<!-- Main JS -->
+<script src="{% static 'assets/js/main.js' %}"></script>
+
+<!-- Page JS -->
+<script src="{% static 'assets/js/dashboards-analytics.js' %}"></script>
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<!-- Add custom notification scripts -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get CSRF token
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    // Common fetch function for all notification actions
+    async function fetchNotification(url, method = 'POST') {
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json'
+                },
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'An error occurred');
+            return data;
+        } catch (error) {
+            console.error('Error:', error);
+            alert(error.message);
+            return null;
+        }
+    }
+
+    // Mark single notification as read/unread
+    document.querySelectorAll('.mark-read').forEach(btn => {
+        btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const row = this.closest('tr');
+            const notificationId = row.dataset.id;
+            const result = await fetchNotification(`{% url 'notifications:mark_as_read' 0 %}`.replace('0', notificationId));
+            
+            if (result) {
+                row.classList.toggle('unread');
+                const badge = row.querySelector('td:nth-child(6) .badge');
+                badge.classList.toggle('bg-success');
+                badge.classList.toggle('bg-warning');
+                badge.textContent = result.is_read ? 'Read' : 'Unread';
+                this.textContent = `Mark as ${result.is_read ? 'Unread' : 'Read'}`;
+            }
+        });
+    });
+
+    // Mark all as read
+    document.getElementById('markAllRead').addEventListener('click', async function() {
+        if (confirm('Mark all notifications as read?')) {
+            const result = await fetchNotification("{% url 'notifications:mark_all_read' %}");
+            if (result) {
+                location.reload();
+            }
+        }
+    });
+
+    // Delete single notification
+    document.querySelectorAll('.delete-notification').forEach(btn => {
+        btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            if (!confirm('Are you sure you want to delete this notification?')) return;
+            
+            const row = this.closest('tr');
+            const notificationId = row.dataset.id;
+            const result = await fetchNotification(`{% url 'notifications:delete_notification' 0 %}`.replace('0', notificationId));
+            
+            if (result) {
+                row.remove();
+            }
+        });
+    });
+
+    // Clear all notifications
+    document.getElementById('clearAll').addEventListener('click', async function() {
+        if (confirm('Are you sure you want to delete all notifications?')) {
+            const result = await fetchNotification("{% url 'notifications:delete_all' %}");
+            if (result) {
+                location.reload();
+            }
+        }
+    });
+
+    // Filter functionality
+    const typeFilter = document.getElementById('typeFilter');
+    const severityFilter = document.getElementById('severityFilter');
+    const searchInput = document.getElementById('searchNotification');
+    
+    function applyFilters() {
+        const type = typeFilter.value;
+        const severity = severityFilter.value;
+        const search = searchInput.value.toLowerCase();
+        
+        document.querySelectorAll('.notification-row').forEach(row => {
+            let show = true;
+            if (type && !row.querySelector('td:nth-child(2)').textContent.includes(type)) show = false;
+            if (severity && !row.querySelector('.badge').classList.contains(`bg-${severity}`)) show = false;
+            if (search && !row.querySelector('.notification-message').textContent.toLowerCase().includes(search)) show = false;
+            
+            row.style.display = show ? '' : 'none';
+        });
+    }
+
+    typeFilter.addEventListener('change', applyFilters);
+    severityFilter.addEventListener('change', applyFilters);
+    searchInput.addEventListener('input', applyFilters);
+    
+    // Bulk actions
+    document.getElementById('selectAll').addEventListener('change', function() {
+        document.querySelectorAll('.notification-check').forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+
+    // View details functionality
+    document.querySelectorAll('.view-details').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const row = this.closest('tr');
+            const message = row.querySelector('.notification-message').textContent;
+            document.getElementById('notificationDetails').textContent = message;
+            new bootstrap.Modal(document.getElementById('notificationModal')).show();
+        });
+    });
+});
+</script>
+
+<!-- Add custom styles -->
+<style>
+.unread {
+    background-color: rgba(var(--bs-primary-rgb), 0.05);
+}
+.notification-row:hover {
+    cursor: pointer;
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+.notification-message {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+</style>
+</body>
+</html>
+
