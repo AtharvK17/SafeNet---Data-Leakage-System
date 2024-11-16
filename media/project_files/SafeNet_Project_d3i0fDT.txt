@@ -1,0 +1,17 @@
+SafeNet Project
+-Projects App
+-- View
+-- Create
+-- Edit
+-- Delete
+-Tasks App
+-- View
+-- Create
+-- Edit
+-- Delete
+-Accounts App
+-- Account Settings
+-- Sign Up
+-- Login
+-- Forgot Password
+-- OTP-Verification 
